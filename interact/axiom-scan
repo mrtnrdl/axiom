@@ -194,6 +194,7 @@ else
         mv "$tmp/split/$f" "$tmp/input/$instance"
     done
     total=$i
+fi
 }
 
 merge_output() {
