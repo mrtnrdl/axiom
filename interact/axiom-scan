@@ -556,7 +556,7 @@ if [[ "$command" =~ "_target_" ]]; then
     $interlace_cmd --no-bar -c "$ssh_command _target_ 'mkdir -p $scan_dir/output'" >/dev/null 2>&1
     echo "$command" > "$tmp/command"
 #    echo "Uploading Commands..."
-    $interlace_cmd --no-bar -c " $tmp/command _target_:$scan_dir/command --cache -F=$sshconfig >/dev/null 2>&1" >/dev/null 2>&1
+    $interlace_cmd --no-bar -c "axiom-scp $tmp/command _target_:$scan_dir/command --cache -F=$sshconfig >/dev/null 2>&1" >/dev/null 2>&1
 else
     # Prep the host by making the scan directory 
     $interlace_cmd -c "$ssh_command _target_ 'mkdir -p $scan_dir'" >/dev/null 2>&1
