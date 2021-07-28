@@ -31,11 +31,13 @@ generate_sshconfig
 echo "random_chain,proxy_dns ,remote_dns_subnet 224,tcp_read_time_out 15000,tcp_connect_time_out 8000,[ProxyList]," | tr ',' '\n' >proxychains.conf
 
 
+tmp="$AXIOM_PATH/tmp/$(date +%s)"
+mkdir -p "$tmp"
+
+echo -e "global\n\tdaemon\n\tmaxconn 4096\n\ttune.ssl.default-dh-param 2048\n\t\ndefaults\n\tlog\tglobal\n\tretries\t3\n\tmaxconn\t2000\n\ttimeout connect\t5s\n\ttimeout client\t50s\n\ttimeout server\t50s\n\nlisten stats\n\tbind 127.0.0.1:1338\n\tbalance\n\tmode http\n\tstats enable\n\tstats auth admin:admin\n\nfrontend axiom_in\n\tbind *:1337\n\tmode tcp\n\tuse_backend axiom_out\n\nbackend axiom_out\n\tbalance source\n\tmode tcp\n\tserver service01 127.0.0.1:1337" > "$tmp/haproxy.cfg"
 
 if [[ "$single_mode" == "true" ]]; then
-    tmp="$AXIOM_PATH/tmp/$(date +%s)"
-    mkdir -p "$tmp"
-    echo -e "global\n\t\tdaemon\n\t\tuser root\n\t\tgroup root\n\ndefaults\n\t\tmode tcp\n\t\tmaxconn 3000\n\t\ttimeout connect 5000ms\n\t\ttimeout client 50000ms\n\t\ttimeout server 50000ms\n\nlisten funnel_proxy\n\t\tbind *:1337\n\t\tmode tcp\n\t\tbalance roundrobin\n\t\tdefault_backend doxycannon\n\nbackend doxycannon" >> "$tmp/haproxy.cfg"
+    echo -e "global\n\t\tdaemon\n\t\tuser root\n\t\tgroup root\n\ndefaults\n\t\tmode tcp\n\t\tmaxconn 3000\n\t\ttimeout connect 5000ms\n\t\ttimeout client 50000ms\n\t\ttimeout server 50000ms\n\nlisten funnel_proxy\n\t\tbind *:1337\n\t\tmode tcp\n\t\tbalance roundrobin\n\t\tdefault_backend doxycannon\n\nbackend doxycannon" > "$tmp/haproxy.cfg"
 fi
 
 i=0
